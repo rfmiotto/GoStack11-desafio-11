@@ -16,11 +16,16 @@ export const Header = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  height: 160px;
 `;
 
 export const FilterContainer = styled.View`
-  padding: 0 24px;
-  margin-top: -28px;
+  padding: 0 20px;
+  position: absolute;
+  align-self: center;
+  left: 0;
+  right: 0;
+  margin-top: 130px;
 `;
 
 export const Title = styled.Text`
