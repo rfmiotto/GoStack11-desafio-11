@@ -2,11 +2,28 @@ import React from 'react';
 
 import { render, wait } from '@testing-library/react-native';
 import AxiosMock from 'axios-mock-adapter';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import api from '../../services/api';
 
 import Orders from '../../pages/Orders';
 
 const mockedNavigate = jest.fn();
+
+const Stack = createStackNavigator();
+const MockedNavigator = ({ component, params = {} }) => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="MockedScreen"
+          component={component}
+          initialParams={params}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
 
 jest.mock('@react-navigation/native', () => {
   return {
@@ -69,7 +86,7 @@ describe('Orders', () => {
 
     apiMock.onGet('/orders').reply(200, items);
 
-    const { getByText } = render(<Orders />);
+    const { getByText } = render(<MockedNavigator component={Orders} />);
 
     await wait(() => expect(getByText('Ao molho')).toBeTruthy(), {
       timeout: 200,

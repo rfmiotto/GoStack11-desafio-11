@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Image } from 'react-native';
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused, useFocusEffect } from '@react-navigation/native';
 
 import api from '../../services/api';
 import formatValue from '../../utils/formatValue';
@@ -31,20 +31,39 @@ interface Food {
 const Orders: React.FC = () => {
   const [orders, setOrders] = useState<Food[]>([]);
 
-  useEffect(() => {
-    async function loadOrders(): Promise<void> {
-      const response = await api.get('/orders');
+  useFocusEffect(
+    useCallback(() => {
+      const loadOrders = async (): Promise<void> => {
+        const response = await api.get('/orders');
 
-      setOrders(
-        response.data.map((orderedFood: Food) => ({
-          ...orderedFood,
-          formattedPrice: formatValue(orderedFood.price),
-        })),
-      );
-    }
+        setOrders(
+          response.data.map((orderedFood: Food) => ({
+            ...orderedFood,
+            formattedPrice: formatValue(orderedFood.price),
+          })),
+        );
+      };
 
-    loadOrders();
-  }, []);
+      loadOrders();
+    }, []),
+  );
+
+  // const isFocused = useIsFocused();
+
+  // useEffect(() => {
+  //   async function loadOrders(): Promise<void> {
+  //     const response = await api.get('/orders');
+
+  //     setOrders(
+  //       response.data.map((orderedFood: Food) => ({
+  //         ...orderedFood,
+  //         formattedPrice: formatValue(orderedFood.price),
+  //       })),
+  //     );
+  //   }
+
+  //   loadOrders();
+  // }, [isFocused]);
 
   return (
     <Container>

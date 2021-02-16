@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Image } from 'react-native';
+import { useIsFocused, useFocusEffect } from '@react-navigation/native';
 
 import api from '../../services/api';
 import formatValue from '../../utils/formatValue';
@@ -30,20 +31,39 @@ interface Food {
 const Favorites: React.FC = () => {
   const [favorites, setFavorites] = useState<Food[]>([]);
 
-  useEffect(() => {
-    async function loadFavorites(): Promise<void> {
-      const response = await api.get('/favorites');
+  useFocusEffect(
+    useCallback(() => {
+      const loadFavorites = async (): Promise<void> => {
+        const response = await api.get('/favorites');
 
-      setFavorites(
-        response.data.map((favoriteFood: Food) => ({
-          ...favoriteFood,
-          formattedPrice: formatValue(favoriteFood.price),
-        })),
-      );
-    }
+        setFavorites(
+          response.data.map((favoriteFood: Food) => ({
+            ...favoriteFood,
+            formattedPrice: formatValue(favoriteFood.price),
+          })),
+        );
+      };
 
-    loadFavorites();
-  }, []);
+      loadFavorites();
+    }, []),
+  );
+
+  // const isFocused = useIsFocused();
+
+  // useEffect(() => {
+  //   async function loadFavorites(): Promise<void> {
+  //     const response = await api.get('/favorites');
+
+  //     setFavorites(
+  //       response.data.map((favoriteFood: Food) => ({
+  //         ...favoriteFood,
+  //         formattedPrice: formatValue(favoriteFood.price),
+  //       })),
+  //     );
+  //   }
+
+  //   loadFavorites();
+  // }, [isFocused]);
 
   return (
     <Container>

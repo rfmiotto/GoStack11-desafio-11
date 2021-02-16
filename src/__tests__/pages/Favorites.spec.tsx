@@ -2,9 +2,26 @@ import React from 'react';
 
 import { render, wait } from '@testing-library/react-native';
 import AxiosMock from 'axios-mock-adapter';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import api from '../../services/api';
 
 import Favorites from '../../pages/Favorites';
+
+const Stack = createStackNavigator();
+const MockedNavigator = ({ component, params = {} }) => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="MockedScreen"
+          component={component}
+          initialParams={params}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
 
 const mockedNavigate = jest.fn();
 
@@ -69,7 +86,7 @@ describe('Favorites', () => {
 
     apiMock.onGet('/favorites').reply(200, items);
 
-    const { getByText } = render(<Favorites />);
+    const { getByText } = render(<MockedNavigator component={Favorites} />);
 
     await wait(() => expect(getByText('Ao molho')).toBeTruthy(), {
       timeout: 200,
